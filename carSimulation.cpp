@@ -4,6 +4,7 @@
 #include "car.h"
 
 #define SIM_ITER_COUNT 100
+#define NUMBER_OF_LINEBREAKS 5
 
 int main()
 {
@@ -19,7 +20,7 @@ int main()
     {
         if (std::clock() >= stamp + 100)
         {
-            std::cout << std::string(100, '\n');
+            std::cout << std::string(NUMBER_OF_LINEBREAKS, '\n');
             std::cout << "Effective Road Angle: " << 0 << "\tSpeed Limit: " << speedLimit << std::endl;
             car.setPower(speedLimit);
             std::cout << "Speed: " << car.getSpeed(0) << std::endl;
@@ -34,7 +35,7 @@ int main()
     {
         if (std::clock() >= stamp + 100)
         {
-            std::cout << std::string(100, '\n');
+            std::cout << std::string(NUMBER_OF_LINEBREAKS, '\n');
             std::cout << "Effective Road Angle: " << 5 << "\tSpeed Limit: " << speedLimit << std::endl;
             car.setPower(speedLimit);
             std::cout << "Speed: " << car.getSpeed(5) << std::endl;
@@ -49,7 +50,7 @@ int main()
     {
         if (std::clock() >= stamp + 100)
         {
-            std::cout << std::string(100, '\n');
+            std::cout << std::string(NUMBER_OF_LINEBREAKS, '\n');
             std::cout << "Effective Road Angle: " << 10 << "\tSpeed Limit: " << speedLimit << std::endl;
             car.setPower(speedLimit);
             std::cout << "Speed: " << car.getSpeed(10) << std::endl;
