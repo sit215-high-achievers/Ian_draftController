@@ -5,10 +5,16 @@
 
 Car::Car(int speedLimit)
 {
+    //Power, speed, acceleration values for the car
     power = 0;
     speed = 0;
     accel = 0;
     //Control functions
+    //Four parameters for trapezoid-shaped functions (left, right, middle-left, middle-right)
+    //belowSetSpeedBig and deceleratingBig have extreme negative values for left-hand points to catch values off 
+    //the left side of the graph.
+    //overSetSpeedBig and acceleratingBig have large positive values for the same reason on the right-hand side.
+    //Three parameters for triangular-shaped functions(left, middle, right)
     belowSetSpeedBig.setPoints(-10000, -8, -10000, -speedLimit);
     belowSetSpeedSmall.setPoints(-10, 0, -5);
     atSetSpeed.setPoints(-1, 1, 0);
@@ -25,10 +31,14 @@ Car::Car(int speedLimit)
 double
 Car::getSpeed(double roadAngle)
 {
+    //Store current speed to use later to calculate current rate of change
     double prevSpeed = speed;
+    //Deduct argument passed from applied engine power
     double effectivePower = power - roadAngle;
 
+    //This function is called 10 times per second, divide effectivePower by 10 before adding to speed
     speed += (effectivePower / 10);
+    //Calculate acceleration, timespan between speed updates is 0.1 seconds
     accel = (speed - prevSpeed) / 0.1;
 
     return speed;
@@ -49,6 +59,7 @@ void Car::setPower(int speedLimit)
     accelSmall = acceleratingSmall.getValue(accel);
     accelBig = acceleratingBig.getValue(accel);
 
+    //Print function memberships
     std::cout << "Memberships:\n";
     std::cout << "belowBig: " << belowBig << std::endl;
     std::cout << "belowSmall: " << belowSmall << std::endl;
@@ -61,10 +72,14 @@ void Car::setPower(int speedLimit)
     std::cout << "accelSmall: " << accelSmall << std::endl;
     std::cout << "accelBig: " << accelBig << "\n\n";
 
+    //Array of double, double pairs. Stores the average of the speed and acceleration inputs, and the value of the
+    //relevant output rule.
     std::vector<std::pair<double, double>> memberships;
+    //Lambda function to add new pair to the above vector.
     auto addMember = [&memberships](double d1, double d2, double d3) { memberships.push_back(std::make_pair((d1 + d2) / 2, d3)); };
 
-    //Average non-zero pairs and apply relevant rule to power output
+    //Find speed and acceleration values which have nonzero memberships, average them, and pair them with
+    //their relevant output rule using the lambda function defined above.
     if (belowBig > 0)
     {
         if (accelBig > 0)
@@ -130,20 +145,30 @@ void Car::setPower(int speedLimit)
         if (decelSmall > 0)
             addMember(overBig, decelSmall, MAX_BIG_DECEL_VAL);
     }
+    
+    //Get area of output function
+    //Replace the first value in each pair (which at the moment stores the average of the speed
+    //and acceleration memberships) with the area of the trapezoid defined from the output function.
+    //i.e. the output triangle cut off at the height of the average input members
 
     for (auto &p : memberships)
-        p.first = 1 - (p.first / 2);
+        //Subtract the smaller triangle from the whole triangle to get the trapezoid area
+        p.first = (p.second * 0.5) - ((1 - p.first) * p.second * ((1 - p.first) / 2));
 
-    double a = 0, b = 0;
+    //Calculate centre of gravity
+    //Centre of gravity is the sum of the areas of the trapezoids weighted by their base values, divided by
+    //the sum of their areas.
+    //((Area of trapezoid A*Output value of trapezoid A)+(area of trapizoid B*Output value of trapezoid B)) / (Sum of areas)
+    double weightedAreaSum = 0, areaSum = 0;
     for (auto &p : memberships)
     {
-        a += p.first * p.second;
-        b += p.first;
+        weightedAreaSum += p.first * p.second;
+        areaSum += p.first;
     }
+    if (areaSum != 0)
+        power += weightedAreaSum / areaSum;
 
-    if (b != 0)
-        power += a / b;
-
+    //If the new applied power limit is over the available power of the engine, set power to maximum engine power
     if (power > CAR_POWER_LIMIT)
         power = CAR_POWER_LIMIT;
 }
