@@ -151,10 +151,9 @@ void Car::setPower(int speedLimit)
     //and acceleration memberships) with the area of the trapezoid defined from the output function.
     //i.e. the output triangle cut off at the height of the average input members
 
-    for (auto &p : memberships)
-        //Subtract the smaller triangle from the whole triangle to get the trapezoid area
-        p.first = (p.second * 0.5) - ((1 - p.first) * p.second * ((1 - p.first) / 2));
-
+    //Get the area of the output shape (the output triangle cutoff at height p.first)
+    for (auto &p : memberships)        
+        p.first = p.second * p.first * (1 - (p.first / 2));
     //Calculate centre of gravity
     //Centre of gravity is the sum of the areas of the trapezoids weighted by their base values, divided by
     //the sum of their areas.
