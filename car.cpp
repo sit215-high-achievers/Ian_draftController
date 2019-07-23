@@ -15,17 +15,17 @@ Car::Car(int speedLimit)
     //the left side of the graph.
     //overSetSpeedBig and acceleratingBig have large positive values for the same reason on the right-hand side.
     //Three parameters for triangular-shaped functions(left, middle, right)
-    belowSetSpeedBig.setPoints(-10000, -8, -10000, -speedLimit);
-    belowSetSpeedSmall.setPoints(-10, 0, -5);
+    belowSetSpeedBig.setPoints(-10000, -10, -10000, -20);
+    belowSetSpeedSmall.setPoints(-11, 0, -5.5);
     atSetSpeed.setPoints(-1, 1, 0);
-    overSetSpeedSmall.setPoints(0, 10, 5);
-    overSetSpeedBig.setPoints(8, 10000, speedLimit, 10000);
+    overSetSpeedSmall.setPoints(0, 11, 5.5);
+    overSetSpeedBig.setPoints(10, 10000, 20, 10000);
 
-    deceleratingBig.setPoints(-1000, -5, -1000, -15);
-    deceleratingSmall.setPoints(-6, 0, -3);
-    stableChange.setPoints(-0.1, 0.1, 0);
-    acceleratingSmall.setPoints(0, 6, 3);
-    acceleratingBig.setPoints(5, 1000, 15, 1000);
+    deceleratingBig.setPoints(-1000, -10, -1000, -20);
+    deceleratingSmall.setPoints(-11, 0, -5.5);
+    stableChange.setPoints(-1, 1, 0);
+    acceleratingSmall.setPoints(0, 11, 5.5);
+    acceleratingBig.setPoints(10, 1000, 20, 1000);
 }
 
 double
@@ -89,7 +89,7 @@ void Car::setPower(int speedLimit)
         if (stable > 0)
             addMember(belowBig, stable, MAX_BIG_ACCEL_VAL);
         if (decelBig > 0)
-            addMember(belowBig, decelBig, MAX_BIG_ACCEL_VAL);
+            addMember(belowBig, decelBig, NO_CHANGE_VAL);
         if (decelSmall > 0)
             addMember(belowBig, decelSmall, MAX_BIG_ACCEL_VAL);
     }
@@ -141,7 +141,7 @@ void Car::setPower(int speedLimit)
         if (stable > 0)
             addMember(overBig, stable, MAX_BIG_DECEL_VAL);
         if (decelBig > 0)
-            addMember(overBig, decelBig, MAX_SMALL_DECEL_VAL);
+            addMember(overBig, decelBig, NO_CHANGE_VAL);
         if (decelSmall > 0)
             addMember(overBig, decelSmall, MAX_BIG_DECEL_VAL);
     }
@@ -153,7 +153,7 @@ void Car::setPower(int speedLimit)
 
     //Get the area of the output shape (the output triangle cutoff at height p.first)
     for (auto &p : memberships)        
-        p.first = p.second * p.first * (1 - (p.first / 2));
+        p.first = 5 * p.first * (1 - (p.first / 2));
     //Calculate centre of gravity
     //Centre of gravity is the sum of the areas of the trapezoids weighted by their base values, divided by
     //the sum of their areas.
