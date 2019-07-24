@@ -15,17 +15,17 @@ Car::Car(int speedLimit)
     //the left side of the graph.
     //overSetSpeedBig and acceleratingBig have large positive values for the same reason on the right-hand side.
     //Three parameters for triangular-shaped functions(left, middle, right)
-    belowSetSpeedBig.setPoints(-10000, -10, -10000, -20);
-    belowSetSpeedSmall.setPoints(-11, 0, -5.5);
+    belowSetSpeedBig.setPoints(-10000, -7.5, -10000, -15);
+    belowSetSpeedSmall.setPoints(-15, 0, -7.5);
     atSetSpeed.setPoints(-1, 1, 0);
-    overSetSpeedSmall.setPoints(0, 11, 5.5);
-    overSetSpeedBig.setPoints(10, 10000, 20, 10000);
+    overSetSpeedSmall.setPoints(0, 15, 7.5);
+    overSetSpeedBig.setPoints(7.5, 10000, 15, 10000);
 
-    deceleratingBig.setPoints(-1000, -10, -1000, -20);
-    deceleratingSmall.setPoints(-11, 0, -5.5);
+    deceleratingBig.setPoints(-1000, -5, -1000, -10);
+    deceleratingSmall.setPoints(-10, 0, -5);
     stableChange.setPoints(-1, 1, 0);
-    acceleratingSmall.setPoints(0, 11, 5.5);
-    acceleratingBig.setPoints(10, 1000, 20, 1000);
+    acceleratingSmall.setPoints(0, 10, 5);
+    acceleratingBig.setPoints(5, 1000, 10, 1000);
 }
 
 double
